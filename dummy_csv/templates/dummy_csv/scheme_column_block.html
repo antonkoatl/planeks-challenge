@@ -1,0 +1,47 @@
+{% load app_filters %}
+
+<tr id="{{ column.prefix }}-head">
+    <td>
+        <div class="p-1">Column name</div>
+    </td>
+    <td>
+        <div class="p-1">Type</div>
+    </td>
+    <td id="from-{{ column.prefix }}-head" style="width: 10%; visibility: hidden;">
+        <div class="p-1">From</div>
+    </td>
+    <td id="to-{{ column.prefix }}-head" style="width: 10%; visibility: hidden;">
+        <div class="p-1">To</div>
+    </td>
+    <td>
+        <div class="p-1">Order</div>
+    </td>
+    <td>
+        <div class="p-1"></div>
+    </td>
+</tr>
+<tr id="{{ column.prefix }}-body">
+    <td>
+        <div class="p-1">{{ column.name|add_class:"form-control" }}</div>
+    </td>
+    <td>
+        <div class="p-1">{{ column.type|add_class:"form-select" }}</div>
+    </td>
+    <td id="from-{{ column.prefix }}-body" style="width: 10%; visibility: hidden;">
+        <div class="p-1">{{ column.parameter_one|add_class:"form-control" }}</div>
+    </td>
+    <td id="to-{{ column.prefix }}-body" style="width: 10%; visibility: hidden;">
+        <div class="p-1">{{ column.parameter_two|add_class:"form-control" }}</div>
+    </td>
+    <td>
+        <div class="p-1">{{ column.order|add_class:"form-control" }}</div>
+    </td>
+    <td>
+        <div class="p-1">
+            <button class="btn text-danger p-0" name="del_btn-{{ column.prefix }}" onclick="deleteColumn('{{ column.prefix }}');" type="button">Delete</button>
+            <input type="hidden" name="{{ column.prefix }}-DELETE" id="id_{{ column.prefix }}-DELETE">
+            {{ column.id }}
+            {{ column.scheme }}
+        </div>
+    </td>
+</tr>

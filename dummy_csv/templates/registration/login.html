@@ -3,54 +3,38 @@
 
 {% block content %}
     <div class="">
-        <div class="container border position-absolute top-50 start-50 translate-middle">
+        <div class="container border position-absolute top-50 start-50 translate-middle" style="width: 40%;">
             <div class="row pb-5 justify-content-center">
-                <div class="col-auto text-center">
-                    <div class="m-5 fs-2">
-                        Login
+                <div class="col text-center w-50">
+                    <div class="row">
+                        <div class="p-5 fs-2">
+                            Login
+                        </div>
                     </div>
 
                     {% if form.errors %}
-                        <p>Your username and password didn't match. Please try again.</p>
+                        <div class="row">
+                            <div>Your username and password didn't match. Please try again.</div>
+                        </div>
                     {% endif %}
 
-                    {% if next %}
-                        {% if user.is_authenticated %}
-                            <p>Your account doesn't have access to this page. To proceed,
-                            please login with an account that has access.</p>
-                        {% else %}
-                            <p>Please login to see this page.</p>
-                        {% endif %}
-                    {% endif %}
-
-                    <form method="post" action="{% url 'login' %}">
-                        {% csrf_token %}
-                        <div class="row mb-3">
-                            <div class="col-auto">
-                                {{ form.username|add_place_holder:"Username" }}
-                            </div>
-                            <div class="col-auto">
-                                <span class="form-text">
-                                    {{ form.username.errors }}
-                                </span>
-                            </div>
+                    <div class="row mb-3 justify-content-center">
+                        <div class="col-auto w-50">
+                            <form method="post" action="{% url 'login' %}">
+                                {% csrf_token %}
+                                    <div class="p-2">
+                                        {{ form.username|add_place_holder:"Username"|add_class:"form-control" }}
+                                    </div>
+                                    <div class="p-2">
+                                        {{ form.password|add_place_holder:"Password"|add_class:"form-control" }}
+                                    </div>
+                                    <div class="d-flex p-2">
+                                        <input type="submit" value="login" class="btn btn-primary ms-auto" />
+                                    </div>
+                                <input type="hidden" name="next" value="{{ next }}" />
+                            </form>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-auto">
-                                {{ form.password|add_place_holder:"Password" }}
-                            </div>
-                            <div class="col-auto">
-                                <span class="form-text">
-                                    {{ form.password.errors }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="d-flex">
-                            <input type="submit" value="login" class="btn btn-primary ms-auto" />
-                        </div>
-                        <input type="hidden" name="next" value="{{ next }}" />
-                    </form>
+                    </div>
 
                 </div>
             </div>

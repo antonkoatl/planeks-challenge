@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block header %}
+    {% include "header.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row p-3">
+            <div class="col">
+                <h5>Data sets</h5>
+            </div>
+            <div class="col p-3">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row p-3">
+                        <div class="col">
+                            {{ form }}
+                        </div>
+                        <div class="col">
+                            <input class="btn btn-success" type="submit" value="Generate data">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row p-3">
+            <div class="col">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Created</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dataset in dataset_list %}
+                            <tr id="dataset-{{ dataset.id }}">
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ dataset.created }}</td>
+                                <td><span class="badge {% if dataset.status == 'p' %}bg-secondary{% else %}bg-success{% endif %} fs-6">{{ dataset.get_status_display }}</span></td>
+                                <td>
+                                    {% if dataset.status == 'r' %}
+                                        <a class="btn text-primary p-0" href="{{ dataset.file.url }}">Download</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        function worker() {
+            var dataset = $('[id*=dataset]').filter(
+                            function (index, el) {
+                                return el.children[2].textContent == 'Processing';
+                            }
+                        );
+            $.ajax({
+                url: "{% url 'poll_state' %}",
+                data: {
+                    dataset_ids: $.map(
+                        dataset,
+                        function(n, i) {
+                            return n.id.split('-')[1];
+                        }
+                    ),
+                },
+                success: function(data) {
+                    data.forEach(
+                        function (item, i) {
+                            $('#dataset-' + item[0])[0].children[2].children[0].textContent = 'Ready';
+                            $('#dataset-' + item[0])[0].children[2].children[0].className = "badge bg-success fs-6";
+                            $('#dataset-' + item[0])[0].children[3].innerHTML = '<a class="btn text-primary p-0" href="' + item[1] + '">Download</a>';
+                        }
+                    );
+                    $('.result').html(data);
+                },
+                complete: function() {
+                    if (dataset.length > 0) {setTimeout(worker, 1000);}
+                }
+            });
+        };
+
+        worker();
+    </script>
+{% endblock %}

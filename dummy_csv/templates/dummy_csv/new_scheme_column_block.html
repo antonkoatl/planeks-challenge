@@ -1,0 +1,44 @@
+<form method="post">
+    {% csrf_token %}
+    <div class="row p-3">
+        <div class="col border">
+            <table id="column_table" class="table table-borderless">
+                <tbody>
+                    {% include 'dummy_csv/scheme_column_block.html' with column=new_column_form %}
+                    <tr>
+                        <td>
+                            <div class="p-1"><input class="btn btn-success" type="button" value="Add More" id="add_more"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+
+<script>
+    function cloneMore(selector, type, target) {
+        var newElement = $(selector).clone(true);
+        var total = $('#id_' + type + '-TOTAL_FORMS').val();
+        newElement.find(':input').each(function() {
+            var name = $(this).attr('name').replace(/__prefix__/g, total);
+            var source = '#id_new' + $(this).attr('name').split(/__prefix__/g)[1]
+            var id = 'id_' + name;
+            $(this).attr({'name': name, 'id': id}).val($(source).val()).removeAttr('checked');
+            $(source).val('')
+        });
+        newElement.find('label').each(function() {
+            var newFor = $(this).attr('for').replace(/__prefix__/g, total);
+            $(this).attr('for', newFor);
+        });
+        newElement.removeAttr( 'style' );
+        newElement.removeAttr( 'id' );
+        total++;
+        $('#id_' + type + '-TOTAL_FORMS').val(total);
+        $(target).append(newElement);
+    }
+
+    $('#add_more').click(function() {
+        cloneMore('#empty_form > tr', 'column_set', '#column_table > tbody');
+    });
+</script>

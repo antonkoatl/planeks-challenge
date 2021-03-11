@@ -1,3 +1,4 @@
-django
+django~=3.1.5
 gunicorn
 django-heroku
+celery~=5.0.5

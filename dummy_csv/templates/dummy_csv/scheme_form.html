@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load app_filters %}
+
+{% block header %}
+    {% include "header.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row p-3">
+                <div class="col">
+                    <h5>New schema</h5>
+                </div>
+                <div class="col d-flex">
+                    <input type="submit" value="Submit" class="btn btn-primary ms-auto">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-auto w-50">
+                    <div class="p-1">{{ form.name.label }}</div>
+                    <div class="p-1">
+                        {{ form.name|add_class:"form-control" }}
+                    </div>
+                    <div class="p-1">{{ form.column_separator.label }}</div>
+                    <div class="p-2">
+                        {{ form.column_separator|add_class:"form-select" }}
+                    </div>
+                    <div class="p-1">{{ form.string_character.label }}</div>
+                    <div class="p-2">
+                        {{ form.string_character|add_class:"form-select" }}
+                    </div>
+                </div>
+            </div>
+            <div class="row p-3">
+                <div class="col" id="form_set">
+                    <h5>Schema columns</h5>
+                    <table id="column_table" class="table table-borderless">
+                        <tbody>
+                            {% for column in columns %}
+                                    {% include 'dummy_csv/scheme_column_block.html' %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <table class="table table-borderless" style="display:none">
+                        <tbody id="empty_form">
+                            {% include 'dummy_csv/scheme_column_block.html' with column=columns.empty_form %}
+                        </tbody>
+                    </table>
+                    {{ columns.management_form }}
+                </div>
+            </div>
+        </form>
+        {% include 'dummy_csv/new_scheme_column_block.html' %}
+    </div>
+    <script>
+        function deleteColumn(prefix) {
+            $('#' + prefix + '-head').hide();
+            $('#' + prefix + '-body').hide();
+            $('#id_' + prefix + '-DELETE').val(true);
+        }
+
+        function switchVisibility() {
+            var prefix = $(this).attr('id').slice(3).slice(0, -5);
+            switch ($(this).val()) {
+                case 'text':
+                case 'int':
+                    $('#from-' + prefix + '-head').css('visibility','visible');
+                    $('#to-' + prefix + '-head').css('visibility','visible');
+                    $('#from-' + prefix + '-body').css('visibility','visible');
+                    $('#to-' + prefix + '-body').css('visibility','visible');
+                    break;
+                default:
+                    $('#from-' + prefix + '-head').css('visibility','hidden');
+                    $('#to-' + prefix + '-head').css('visibility','hidden');
+                    $('#from-' + prefix + '-body').css('visibility','hidden');
+                    $('#to-' + prefix + '-body').css('visibility','hidden');
+            }
+        }
+
+        $('[id*=-type]').on('change', switchVisibility);
+        $('[id*=-type]').change();
+
+    </script>
+{% endblock %}

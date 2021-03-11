@@ -1,0 +1,21 @@
+<header role="banner">
+    <div class="navbar navbar-expand navbar-light bg-light">
+        <span class="container">
+            <a class="navbar-brand" href="{% url 'schemas' %}">
+                FakeCSV
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'schemas' %}">Schemas</a></li>
+                </ul>
+                <span class="navbar-text">
+                    Hello, <b>{{ user.username }}</b>.
+                </span>
+                <div class="navbar-nav">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</header>

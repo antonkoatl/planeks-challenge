@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block header %}
+    {% include "header.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="w-75">
+        <div class="row p-3">
+            <div class="col">
+                <h5>Data schemas</h5>
+            </div>
+            <div class="col d-flex">
+                <a href="{% url 'new_schema' %}" class="btn btn-success ms-auto">New schema</a>
+            </div>
+        </div>
+        <div class="row p-3">
+            <div class="col">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Modified</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scheme in scheme_list %}
+                            <tr>
+                                <th scope="row"><span>{{ forloop.counter }}</span></th>
+                                <td><a class="btn text-primary p-0" href="{% url 'datasets' scheme.id %}">{{ scheme.name }}</a></td>
+                                <td>{{ scheme.modified|date:"Y-m-d" }}</td>
+                                <td>
+                                    <a class="btn text-primary p-0" href="{% url 'schema' scheme.id %}">Edit scheme</a>
+                                    <a class="btn text-danger p-0" href="{% url 'delete_schema' scheme.id %}">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
