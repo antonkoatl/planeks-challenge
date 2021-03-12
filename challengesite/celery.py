@@ -7,7 +7,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'challengesite.settings')
 
 
 app = Celery('challengesite',
-             broker='pyamqp://guest@localhost//',
+             broker='pyamqp://guest@94.41.86.239:5672//',
              include=['dummy_csv.tasks'])
 
 # Using a string here means the worker doesn't have to serialize

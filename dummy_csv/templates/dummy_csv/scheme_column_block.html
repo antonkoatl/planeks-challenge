@@ -23,18 +23,23 @@
 <tr id="{{ column.prefix }}-body">
     <td>
         <div class="p-1">{{ column.name|add_class:"form-control" }}</div>
+        <div class="p-1">{{ column.name.errors }}</div>
     </td>
     <td>
         <div class="p-1">{{ column.type|add_class:"form-select" }}</div>
+        <div class="p-1">{{ column.type.errors }}</div>
     </td>
     <td id="from-{{ column.prefix }}-body" style="width: 10%; visibility: hidden;">
         <div class="p-1">{{ column.parameter_one|add_class:"form-control" }}</div>
+        <div class="p-1">{{ column.parameter_one.errors }}</div>
     </td>
     <td id="to-{{ column.prefix }}-body" style="width: 10%; visibility: hidden;">
         <div class="p-1">{{ column.parameter_two|add_class:"form-control" }}</div>
+        <div class="p-1">{{ column.parameter_two.errors }}</div>
     </td>
     <td>
         <div class="p-1">{{ column.order|add_class:"form-control" }}</div>
+        <div class="p-1">{{ column.order.errors }}</div>
     </td>
     <td>
         <div class="p-1">

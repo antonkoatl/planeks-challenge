@@ -1,4 +1,4 @@
-from django.forms import inlineformset_factory, ModelForm, Form, IntegerField
+from django.forms import inlineformset_factory, ModelForm, Form, IntegerField, BaseInlineFormSet
 
 from dummy_csv.models import Column, Scheme
 
@@ -13,7 +13,15 @@ class ColumnForm(ModelForm):
         return super(ColumnForm, self).is_valid()
 
 
-SchemeColumnsFormSet = inlineformset_factory(Scheme, Column, form=ColumnForm, extra=0)
+class ColumnsFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super(ColumnsFormSet, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            if 'DELETE' not in form.changed_data:
+                form.empty_permitted = False
+
+
+SchemeColumnsFormSet = inlineformset_factory(Scheme, Column, form=ColumnForm, extra=0, formset=ColumnsFormSet)
 
 
 class SchemeForm(ModelForm):

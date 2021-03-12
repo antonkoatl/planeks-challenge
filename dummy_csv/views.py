@@ -9,6 +9,7 @@ from django.views.generic.edit import FormMixin
 
 from dummy_csv.forms import SchemeColumnsFormSet, SchemeForm, ColumnForm, DatasetForm
 from dummy_csv.models import Scheme, Column, Dataset
+from dummy_csv.tasks import generate_dataset
 
 
 class SchemasView(LoginRequiredMixin, generic.ListView):
@@ -44,11 +45,14 @@ class DatasetsView(LoginRequiredMixin, FormMixin, generic.ListView):
         rows = form.cleaned_data['rows']
         dataset = Dataset(schema_id=self.kwargs['pk'])
         dataset.save()
-        celery.current_app.send_task('dummy_csv.tasks.generate_dataset', (dataset.id, rows))
+        generate_dataset.delay(dataset.id, rows)
         return super().form_valid(form)
 
     def get_success_url(self):
         return '#'
+
+    def get_queryset(self):
+        return self.model.objects.filter(schema_id=self.kwargs['pk'])
 
 
 class NewScheme(LoginRequiredMixin, FormView):
@@ -59,7 +63,7 @@ class NewScheme(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super(NewScheme, self).get_context_data(**kwargs)
 
-        context['columns'] = SchemeColumnsFormSet(instance=context['form'].instance)
+        if 'columns' not in context: context['columns'] = SchemeColumnsFormSet(instance=context['form'].instance)
 
         context['new_column_form'] = ColumnForm(prefix="new")
 
@@ -74,7 +78,7 @@ class NewScheme(LoginRequiredMixin, FormView):
         if scheme_form.is_valid() and columns_form.is_valid():
             return self.form_valid_and_save(scheme_form, columns_form)
         else:
-            return self.form_invalid(scheme_form)
+            return self.form_invalid_with_columns(scheme_form, columns_form)
 
     def get_success_url(self):
         return reverse('schemas')
@@ -85,6 +89,11 @@ class NewScheme(LoginRequiredMixin, FormView):
         scheme_form.save()
         columns_form.save()
         return super(NewScheme, self).form_valid(scheme_form)
+
+
+    def form_invalid_with_columns(self, scheme_form, columns_form):
+        """If the form is invalid, render the invalid form."""
+        return self.render_to_response(self.get_context_data(form=scheme_form, columns=columns_form))
 
 
     def get_form(self, form_class=None):

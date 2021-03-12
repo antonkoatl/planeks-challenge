@@ -26,7 +26,7 @@
         </div>
         <div class="row p-3">
             <div class="col">
-                <table class="table">
+                <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -39,7 +39,7 @@
                         {% for dataset in dataset_list %}
                             <tr id="dataset-{{ dataset.id }}">
                                 <th scope="row">{{ forloop.counter }}</th>
-                                <td>{{ dataset.created }}</td>
+                                <td>{{ dataset.created|date:"Y-m-d" }}</td>
                                 <td><span class="badge {% if dataset.status == 'p' %}bg-secondary{% else %}bg-success{% endif %} fs-6">{{ dataset.get_status_display }}</span></td>
                                 <td>
                                     {% if dataset.status == 'r' %}

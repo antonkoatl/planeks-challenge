@@ -26,7 +26,7 @@ SECRET_KEY = 'yy1((%&r_*bxg81aaa+2%9ddfi(0(p6(%y%*^e*j6sbvqy#m4d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_celery_results',
     'dummy_csv'
 ]
 
@@ -78,9 +77,12 @@ WSGI_APPLICATION = 'challengesite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        # "NAME": os.path.join(BASE_DIR, "db.sqlite3")
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "d2frmal75396eg",
+        'USER': 'lejtkzxfucqrkg',
+        'PASSWORD': '60aae5c7b0c55baba3ee9cbd8bd49ecbe2bf4736c72cb84a2fdf1dd03aba6d71',
+        'HOST': 'ec2-54-161-239-198.compute-1.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
@@ -113,11 +115,9 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = "/static/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'  # URL для медии в шаблонах
+MEDIA_URL = 'http://94.41.86.239:5000/media/'  # URL для медии в шаблонах
 
 LOGIN_REDIRECT_URL = "schemas"
 LOGOUT_REDIRECT_URL = "login"
 
 django_heroku.settings(locals())
-
-CELERY_RESULT_BACKEND = 'django-db'

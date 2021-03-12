@@ -27,10 +27,11 @@ def generate_dataset(dataset_id, rows):
     dataset = Dataset.objects.select_related('schema').get(id=dataset_id)
     dataset.file.save('dataset.csv', ContentFile(''))
 
-
     with open(dataset.file.path, 'w', newline='') as csvfile:
-        spamwriter = csv.writer(csvfile, delimiter=dataset.schema.column_separator,
+        spamwriter = csv.writer(csvfile,
+                                delimiter=dataset.schema.column_separator,
                                 quotechar=dataset.schema.string_character)
+        spamwriter.writerow(column.name for column in dataset.schema.column_set.all())  # header
         for i in range(rows):
             spamwriter.writerow(dummy_dict[column.type](column.parameter_one, column.parameter_two) for column in dataset.schema.column_set.all())
 
